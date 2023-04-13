@@ -29,6 +29,15 @@
             Represents a Url without the specifics of the server address
             </summary>
         </member>
+        <member name="M:Urls.UrlExtensions.Concat(Urls.RelativeUrl,Urls.RelativeUrl)">
+            <summary>
+            拼接两个相对地址
+            </summary>
+            <param name="this"></param>
+            <param name="relativeUrl"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
         <member name="T:Urls.UserInfo">
             <summary>
             Url credentials. Warning: using this is not recommended. This is here for completeness

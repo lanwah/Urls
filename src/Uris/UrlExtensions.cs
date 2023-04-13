@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Net.Cache;
 using System.Runtime.CompilerServices;
 
 #pragma warning disable IDE0057 // Use range operator
@@ -20,8 +21,10 @@ namespace Urls
 
         public static AbsoluteUrl ToAbsoluteUrl(this Uri uri)
         {
-            if (uri == null) throw new ArgumentNullException(nameof(uri));
-            if (!uri.IsAbsoluteUri) throw new InvalidOperationException(ErrorMessageMustBeAbsolute);
+            if (uri == null)
+                throw new ArgumentNullException(nameof(uri));
+            if (!uri.IsAbsoluteUri)
+                throw new InvalidOperationException(ErrorMessageMustBeAbsolute);
 
             var userInfoTokens = uri.UserInfo?.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -40,8 +43,10 @@ namespace Urls
 
         public static RelativeUrl ToRelativeUrl(this Uri uri)
         {
-            if (uri == null) throw new ArgumentNullException(nameof(uri));
-            if (!uri.IsAbsoluteUri) throw new InvalidOperationException(ErrorMessageMustBeAbsolute);
+            if (uri == null)
+                throw new ArgumentNullException(nameof(uri));
+            if (!uri.IsAbsoluteUri)
+                throw new InvalidOperationException(ErrorMessageMustBeAbsolute);
 
             var path = ImmutableList.Create(uri.LocalPath.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries));
 
@@ -69,9 +74,11 @@ namespace Urls
 
         public static RelativeUrl ToRelativeUrl(this string relativeUrlString)
         {
-            if (relativeUrlString == null) throw new ArgumentNullException(nameof(relativeUrlString));
+            if (relativeUrlString == null)
+                throw new ArgumentNullException(nameof(relativeUrlString));
 
-            if (string.IsNullOrEmpty(relativeUrlString)) return RelativeUrl.Empty;
+            if (string.IsNullOrEmpty(relativeUrlString))
+                return RelativeUrl.Empty;
 
             var tokens = relativeUrlString.Split(new[] { '#' }, StringSplitOptions.None);
 
@@ -106,7 +113,44 @@ namespace Urls
         public static AbsoluteUrl WithRelativeUrl(this AbsoluteUrl absoluteUrl, RelativeUrl relativeUrl)
         =>
         absoluteUrl == null ? throw new ArgumentNullException(nameof(absoluteUrl)) :
-        new AbsoluteUrl(absoluteUrl.Scheme, absoluteUrl.Host, absoluteUrl.Port, relativeUrl, absoluteUrl.UserInfo);
+        new AbsoluteUrl(absoluteUrl.Scheme, absoluteUrl.Host, absoluteUrl.Port, absoluteUrl.RelativeUrl.Concat(relativeUrl), absoluteUrl.UserInfo);
+
+        /// <summary>
+        /// 拼接两个相对地址
+        /// </summary>
+        /// <param name="this"></param>
+        /// <param name="relativeUrl"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static RelativeUrl Concat(this RelativeUrl @this, RelativeUrl relativeUrl)
+        {
+            if (@this == null)
+            {
+                throw new ArgumentNullException(nameof(@this));
+            }
+            if (relativeUrl == null)
+            {
+                throw new ArgumentNullException(nameof(relativeUrl));
+            }
+
+            var newQP = @this.QueryParameters.ToList();
+            if (relativeUrl.QueryParameters != null)
+            {
+                newQP.AddRange(relativeUrl.QueryParameters);
+            }
+            var newPath = @this.Path.ToList();
+            if (relativeUrl.Path != null)
+            {
+                newPath.AddRange(relativeUrl.Path);
+            }
+
+            return @this with
+            {
+                QueryParameters = newQP.ToImmutableList(),
+                Path = newPath.ToImmutableList(),
+            };
+        }
+
 
         public static RelativeUrl WithFragment(this RelativeUrl relativeUrl, string fragment)
         =>
@@ -116,12 +160,21 @@ namespace Urls
         public static RelativeUrl AddQueryString(this RelativeUrl relativeUrl, string fieldName, string value)
         =>
         relativeUrl == null ? throw new ArgumentNullException(nameof(relativeUrl)) :
-        relativeUrl with { QueryParameters = relativeUrl.QueryParameters.Add(new QueryParameter(fieldName, value)) };
+        relativeUrl with
+        {
+            QueryParameters = relativeUrl.QueryParameters.Add(new QueryParameter(fieldName, value))
+        };
 
         public static AbsoluteUrl AddQueryParameter(this AbsoluteUrl absoluteUrl, string fieldName, string value)
         =>
         absoluteUrl == null ? throw new ArgumentNullException(nameof(absoluteUrl)) :
-        absoluteUrl with { RelativeUrl = absoluteUrl.RelativeUrl with { QueryParameters = absoluteUrl.RelativeUrl.QueryParameters.Add(new QueryParameter(fieldName, value)) } };
+        absoluteUrl with
+        {
+            RelativeUrl = absoluteUrl.RelativeUrl with
+            {
+                QueryParameters = absoluteUrl.RelativeUrl.QueryParameters.Add(new QueryParameter(fieldName, value))
+            }
+        };
 
         public static QueryParameter ToQueryParameter(this string fieldName, string value) => new(fieldName, value);
 
@@ -143,17 +196,32 @@ namespace Urls
         public static AbsoluteUrl WithCredentials(this AbsoluteUrl absoluteUrl, string username, string password)
         =>
         absoluteUrl == null ? throw new ArgumentNullException(nameof(absoluteUrl)) :
-        absoluteUrl with { UserInfo = new(username, password) };
+        absoluteUrl with
+        {
+            UserInfo = new(username, password)
+        };
 
         public static AbsoluteUrl WithFragment(this AbsoluteUrl absoluteUrl, string fragment)
         =>
         absoluteUrl == null ? throw new ArgumentNullException(nameof(absoluteUrl)) :
-        absoluteUrl with { RelativeUrl = absoluteUrl.RelativeUrl with { Fragment = fragment } };
+        absoluteUrl with
+        {
+            RelativeUrl = absoluteUrl.RelativeUrl with
+            {
+                Fragment = fragment
+            }
+        };
 
         public static AbsoluteUrl WithPath(this AbsoluteUrl absoluteUrl, IReadOnlyList<string> pathSegments)
         =>
         absoluteUrl == null ? throw new ArgumentNullException(nameof(absoluteUrl)) :
-        absoluteUrl with { RelativeUrl = absoluteUrl.RelativeUrl with { Path = pathSegments.ToImmutableList() } };
+        absoluteUrl with
+        {
+            RelativeUrl = absoluteUrl.RelativeUrl with
+            {
+                Path = pathSegments.ToImmutableList()
+            }
+        };
 
         public static AbsoluteUrl WithPath(this AbsoluteUrl absoluteUrl, params string[] pathSegments)
         => WithPath(absoluteUrl, pathSegments.ToList());
@@ -161,7 +229,10 @@ namespace Urls
         public static AbsoluteUrl WithPort(this AbsoluteUrl absoluteUrl, int port)
         =>
         absoluteUrl == null ? throw new ArgumentNullException(nameof(absoluteUrl)) :
-        absoluteUrl with { Port = port };
+        absoluteUrl with
+        {
+            Port = port
+        };
 
         public static AbsoluteUrl ToHttpUrlFromHost(this string host, int? port = null)
         =>
@@ -179,12 +250,18 @@ namespace Urls
         public static RelativeUrl AppendPath(this RelativeUrl relativeUrl, params string[] args)
             =>
             relativeUrl == null ? throw new ArgumentNullException(nameof(relativeUrl)) :
-            relativeUrl with { Path = relativeUrl.Path.AddRange(args) };
+            relativeUrl with
+            {
+                Path = relativeUrl.Path.AddRange(args)
+            };
 
         public static AbsoluteUrl AppendPath(this AbsoluteUrl absoluteUrl, params string[] args)
             =>
             absoluteUrl == null ? throw new ArgumentNullException(nameof(absoluteUrl)) :
-            absoluteUrl with { RelativeUrl = absoluteUrl.RelativeUrl.AppendPath(args) };
+            absoluteUrl with
+            {
+                RelativeUrl = absoluteUrl.RelativeUrl.AppendPath(args)
+            };
 
         public static ImmutableList<QueryParameter> ToQueryParameters(this QueryParameter queryParameter)
         => new List<QueryParameter> { queryParameter }.ToImmutableList();
