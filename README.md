@@ -1,5 +1,11 @@
 # Urls
 
+于2023/04/12从 [MelbourneDeveloper/Urls](https://github.com/MelbourneDeveloper/Urls) 迁出，以便代码的升级和bug修复。
+
+希望用到此库发现问题的人员能提出bug一起参与维护此库。
+
+---
+
 Treat Urls as first-class citizens
 
 [![.NET](https://github.com/MelbourneDeveloper/Urls/actions/workflows/dotnet.yml/badge.svg?branch=main)](https://github.com/MelbourneDeveloper/Urls/actions/workflows/dotnet.yml)
