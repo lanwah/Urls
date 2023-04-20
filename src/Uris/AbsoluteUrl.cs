@@ -66,6 +66,15 @@ namespace Urls
             new Uri(absoluteUrl.ToString());
 
         public static explicit operator AbsoluteUrl(Uri uri) => uri.ToAbsoluteUrl();
+
+        /// <summary>
+        /// 字符串隐式转换成<see cref="AbsoluteUrl"/>对象
+        /// </summary>
+        /// <param name="relativeUrlString"></param>
+        public static implicit operator AbsoluteUrl(string relativeUrlString)
+        {
+            return relativeUrlString.ToAbsoluteUrl();
+        }
         #endregion
     }
 }

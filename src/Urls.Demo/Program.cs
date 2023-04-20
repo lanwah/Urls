@@ -24,13 +24,17 @@ namespace Urls.Demo
             absoluteUrlString = newAbsoluteUrl.ToString();
             Console.WriteLine($"absoluteUrl WithRelativeUrl relativeUrl：{absoluteUrlString}");
 
-            relativeUrl = relativeUrl.AddQueryString("id", "1");
+            relativeUrl = relativeUrl.AddQueryParameter("id", "1");
             absoluteUrlString = relativeUrl.ToString();
 
             var newRelativeUrl = absoluteUrl.RelativeUrl.Concat(relativeUrl);
             Console.WriteLine($"absoluteUrl.RelativeUrl Concat relativeUrl：{newRelativeUrl}");
 
             Console.WriteLine($"absoluteUrl WithRelativeUrl relativeUrl correct url：{absoluteUrl.WithRelativeUrl(relativeUrl)}");
+
+            // 参数"search/?terms=ImmutableList"字符串隐式转换为了RelativeUrl
+            var newAbsoluteUrl2 = absoluteUrl.WithRelativeUrl("search/?terms=ImmutableList");
+            Console.WriteLine($"absoluteUrl WithRelativeUrl relativeUrl：{newAbsoluteUrl2}");
 
             Console.ReadKey();
         }

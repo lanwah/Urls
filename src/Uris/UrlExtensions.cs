@@ -157,13 +157,19 @@ namespace Urls
         relativeUrl == null ? throw new ArgumentNullException(nameof(relativeUrl)) :
         new(relativeUrl.Path, relativeUrl.QueryParameters, fragment);
 
-        public static RelativeUrl AddQueryString(this RelativeUrl relativeUrl, string fieldName, string value)
+        public static RelativeUrl AddQueryParameter(this RelativeUrl relativeUrl, string fieldName, string value)
         =>
         relativeUrl == null ? throw new ArgumentNullException(nameof(relativeUrl)) :
         relativeUrl with
         {
             QueryParameters = relativeUrl.QueryParameters.Add(new QueryParameter(fieldName, value))
         };
+
+        [Obsolete]
+        public static RelativeUrl AddQueryString(this RelativeUrl relativeUrl, string fieldName, string value)
+        {
+            return relativeUrl.AddQueryParameter(fieldName, value);
+        }
 
         public static AbsoluteUrl AddQueryParameter(this AbsoluteUrl absoluteUrl, string fieldName, string value)
         =>
@@ -266,5 +272,15 @@ namespace Urls
         public static ImmutableList<QueryParameter> ToQueryParameters(this QueryParameter queryParameter)
         => new List<QueryParameter> { queryParameter }.ToImmutableList();
 
+        /// <summary>
+        /// 判断地址是否为绝对地址
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public static bool IsAbsoluteUrl(this string url)
+        {
+            url = url ?? "";
+            return url.ToLower().StartsWith("http://") || url.ToLower().StartsWith("https://");
+        }
     }
 }

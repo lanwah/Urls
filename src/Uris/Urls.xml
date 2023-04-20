@@ -38,6 +38,13 @@
             <returns></returns>
             <exception cref="T:System.ArgumentNullException"></exception>
         </member>
+        <member name="M:Urls.UrlExtensions.IsAbsoluteUrl(System.String)">
+            <summary>
+            判断地址是否为绝对地址
+            </summary>
+            <param name="url"></param>
+            <returns></returns>
+        </member>
         <member name="T:Urls.UserInfo">
             <summary>
             Url credentials. Warning: using this is not recommended. This is here for completeness

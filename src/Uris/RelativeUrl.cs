@@ -79,6 +79,15 @@ namespace Urls
 #endif
             );
         #endregion
+
+        /// <summary>
+        /// 字符串隐式转换成<see cref="RelativeUrl"/>对象
+        /// </summary>
+        /// <param name="relativeUrlString"></param>
+        public static implicit operator RelativeUrl(string relativeUrlString)
+        {
+            return relativeUrlString.ToRelativeUrl();
+        }
     }
 }
 

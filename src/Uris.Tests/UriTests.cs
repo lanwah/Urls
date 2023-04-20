@@ -204,7 +204,7 @@ namespace Urls.UnitTests
         [TestMethod]
         public void TestWithQueryStringStrings()
         {
-            var relativeRelativeUrl = RelativeUrl.Empty.AddQueryString(FieldName1, FieldValue1);
+            var relativeRelativeUrl = RelativeUrl.Empty.AddQueryParameter(FieldName1, FieldValue1);
 
             Assert.AreEqual(
             FieldName1,
@@ -405,7 +405,7 @@ namespace Urls.UnitTests
         {
             const string urlString = "https://localhost:44337/JsonPerson";
             var baseUri = new AbsoluteUrl(urlString);
-            var completeUri = baseUri.WithRelativeUrl(baseUri.RelativeUrl.AddQueryString("personKey", "abc"));
+            var completeUri = baseUri.WithRelativeUrl(baseUri.RelativeUrl.AddQueryParameter("personKey", "abc"));
             Assert.AreEqual($"{urlString}?personKey=abc", completeUri.ToString());
         }
 
