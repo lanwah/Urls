@@ -14,6 +14,12 @@
             Represents a Url with all information
             </summary>
         </member>
+        <member name="M:Urls.AbsoluteUrl.op_Implicit(System.String)~Urls.AbsoluteUrl">
+            <summary>
+            字符串隐式转换成<see cref="T:Urls.AbsoluteUrl"/>对象
+            </summary>
+            <param name="relativeUrlString"></param>
+        </member>
         <member name="T:Urls.QueryParameter">
             <summary>
             Represents a singular Query parameter as part of a Query String
@@ -28,6 +34,12 @@
             <summary>
             Represents a Url without the specifics of the server address
             </summary>
+        </member>
+        <member name="M:Urls.RelativeUrl.op_Implicit(System.String)~Urls.RelativeUrl">
+            <summary>
+            字符串隐式转换成<see cref="T:Urls.RelativeUrl"/>对象
+            </summary>
+            <param name="relativeUrlString"></param>
         </member>
         <member name="M:Urls.UrlExtensions.Concat(Urls.RelativeUrl,Urls.RelativeUrl)">
             <summary>

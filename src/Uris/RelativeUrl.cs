@@ -16,7 +16,7 @@ namespace Urls
     (
          ImmutableList<string> Path,
          ImmutableList<QueryParameter> QueryParameters
-    )
+    ) 
     {
         #region Fields
         private string fragment = "";

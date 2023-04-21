@@ -279,8 +279,11 @@ namespace Urls
         /// <returns></returns>
         public static bool IsAbsoluteUrl(this string url)
         {
-            url = url ?? "";
-            return url.ToLower().StartsWith("http://") || url.ToLower().StartsWith("https://");
+            //url = url ?? "";
+            //return url.ToLower().StartsWith("http://") || url.ToLower().StartsWith("https://");
+
+            Uri uri = new Uri(url, UriKind.RelativeOrAbsolute);
+            return uri.IsAbsoluteUri;
         }
     }
 }
